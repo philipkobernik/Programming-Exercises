@@ -1,0 +1,12 @@
+Programming Exercises
+
+My own solutions to classic programming problems, along with tests for each solution
+
+Binary search
+	*	Traditional incremental method
+	*	Recursive method
+	
+Sort
+	*	Selection sort (relatively dumb ;)
+	
+Run the tests by typing 'ruby binary_search_test.rb' (or sort_test.rb) after navigating to the directory in your terminal
