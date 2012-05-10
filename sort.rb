@@ -17,7 +17,3 @@ class Sort
     return a
   end
 end
-
-#puts a.join(", ").to_s
-
-
