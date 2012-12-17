@@ -1,14 +1,6 @@
 class Discounter
-  def initialize
-    @memory = {}
-  end
-
   def discount(*skus)
-    if @memory.has_key?(skus)
-      @memory[skus]
-    else
-      @memory[skus] = expensive_calculation(*skus)
-    end
+    expensive_calculation(*skus)
   end
 
   private
@@ -19,7 +11,22 @@ class Discounter
   end
 end
 
-d = Discounter.new
+class MemoDiscounter < Discounter
+  def initialize
+    @memory = {}
+  end
+
+  def discount(*skus)
+    if @memory.has_key?(skus)
+      @memory[skus]
+    else
+      @memory[skus] = super
+    end
+  end
+
+end
+
+d = MemoDiscounter.new
 puts d.discount(1, 2, 3)
 puts d.discount(1, 2, 3)
 puts d.discount(3, 4, 3)
