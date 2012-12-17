@@ -1,7 +1,14 @@
 class Discounter
+  def initialize
+    @memory = {}
+  end
 
   def discount(*skus)
-    expensive_calculation(*skus)
+    if @memory.has_key?(skus)
+      @memory[skus]
+    else
+      @memory[skus] = expensive_calculation(*skus)
+    end
   end
 
   private
