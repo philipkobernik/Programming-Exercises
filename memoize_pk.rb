@@ -1,7 +1,31 @@
+module Memoize
+
+  def remember(method)
+    original = "original #{method}"
+
+    alias_method original, method
+
+    memory = {}
+
+    define_method(method) do |*args|
+
+      if memory.has_key?(args)
+        memory[args]
+      else
+        memory[args] = send "original #{method}", *args
+      end
+    end
+  end
+end
+
 class Discounter
+  extend Memoize
+
   def discount(*skus)
     expensive_calculation(*skus)
   end
+
+  remember :discount
 
   private
 
@@ -11,19 +35,6 @@ class Discounter
   end
 end
 
-class Discounter
-  alias_method :_original_discount_, :discount
-
-  def discount(*skus)
-    @memory ||= {}
-
-    if @memory.has_key?(skus)
-      @memory[skus]
-    else
-      @memory[skus] = _original_discount_(*skus)
-    end
-  end
-end
 
 d = Discounter.new
 
