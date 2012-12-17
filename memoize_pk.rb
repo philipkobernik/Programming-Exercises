@@ -1,15 +1,19 @@
-# module Memoize defines method #remember that stores the state of the method specified,
-# then dynamically rewrites that method using define_method.
+# module Memoize defines method #remember that takes a method name and a block.
+# #remember turns the block into a method using define method. Then it turns that method into an object using instance_method.
+# finally, it dynamically rewrites the original method using define_method.
 # The re-written method, if need be, can call the original method by binding it to self
 #
-# LIKE: don't have to use alias_method to 'hide' the original method. Module makes re-use easy. Interface is nice and concise.
-# DISLIKE: replacing the original method feels un-safe (brazen) to me
+# LIKE: don't have to use alias_method to 'hide' the original method. Module makes re-use easy. Interface is even more concise.
+# DISLIKE: replacing the original method feels a bit strange, but I'm warming up to it.
 #
 module Memoize
 
-  def remember(method)
+  def remember(method, &block)
+
+    define_method(method, &block)
 
     original_method = instance_method(method)
+
     memory = {}
 
     define_method(method) do |*args|
@@ -20,6 +24,7 @@ module Memoize
         bound_method = original_method.bind(self)
         memory[args] = bound_method.call(*args)
       end
+
     end
   end
 end
@@ -27,11 +32,9 @@ end
 class Discounter
   extend Memoize
 
-  def discount(*skus)
+  remember :discount do |*skus|
     expensive_calculation(*skus)
   end
-
-  remember :discount
 
   private
 
